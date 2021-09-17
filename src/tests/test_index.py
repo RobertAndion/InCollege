@@ -1,9 +1,7 @@
+import mock
+import pytest
 import src.index
 from src.database_access import database_access as Database
-import mock
-from mock import patch
-import pytest
-
 
 class TestIsPasswordSecure:
     def test_password_character_limit_lower(self):
