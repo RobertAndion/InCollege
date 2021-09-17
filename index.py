@@ -8,12 +8,16 @@ db = sqlite3.connect('InCollege')
 c = db.cursor()
 
 # returns the credentials. Called either in login() or register()
+
+
 def get_credentials():
     user = input('Enter username: ')
     password = input('Enter password: ')
     return (user, password)
 
 # gets called when the user chooses to login
+
+
 def login():
     while True:
         cred = get_credentials()
@@ -29,6 +33,8 @@ def login():
             return False
 
 # gets called when the user chooses to register
+
+
 def register():
     # checking the number of accounts already registered
     c.execute('SELECT * FROM users')
@@ -43,33 +49,44 @@ def register():
         if satisfies:
             # posting data to the database
             c.execute("INSERT INTO users VALUES (?, ?)", cred)
-            print("An account for " + cred[0] + " was registered successfully... Redirecting\n")
+            print("An account for " +
+                  cred[0] + " was registered successfully... Redirecting\n")
             return True
         else:
             print('Weak Password')
             return False
 
 # returns a boolean whether or not the password is secure. Helper function for the register function
+
+
 def is_password_secure(pw):
     reg = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%^()*#?&])[A-Za-z\d@$!#%^()*?&]{8,12}$"
     pattern = re.compile(reg)
     res = re.match(pattern, pw)
-    if res:
-        return True
+    return True if res else False
+
 
 # executes when the user either successfully logged in or registered. Returns the next choice the user makes
+
+
 def logged_in():
-    option = int(input("1- Search for a job\n2- Find people you may know\n3- learn a new skill\nEnter a choice: "))
+    option = int(input(
+        "1- Search for a job\n2- Find people you may know\n3- learn a new skill\nEnter a choice: "))
     if option == 1 or option == 2 or option == 3:
         return option
 
 # function gets called for the first two options
+
+
 def construction():
     print("\nunder construction\n")
 
 # gets called when user chooses to learn a new skill
+
+
 def skills():
-    skill = input('\n1- JavaScript\n2- Python\n3- SQL Sever\n4- MongoDB\n5- Design Patterns\nEnter a choice: ')
+    skill = input(
+        '\n1- JavaScript\n2- Python\n3- SQL Sever\n4- MongoDB\n5- Design Patterns\nEnter a choice: ')
     if skill:
         construction()
     back = input('Return to main menu? y/n: ').lower()
@@ -96,7 +113,8 @@ def main():
     }
 
     # initial prompt (home page)
-    first_action = int(input('Welcome to InCollege:\n1- Login\n2- Register\nEnter a choice: '))
+    first_action = int(
+        input('Welcome to InCollege:\n1- Login\n2- Register\nEnter a choice: '))
     # calls the appropriate function based on the user choice
     if(first_action == 1 or first_action == 2):
         res = home_options[first_action]()
@@ -114,4 +132,6 @@ def main():
     # closes the connection (optional)
     db.close()
 
-main()
+
+if __name__ == "__main__":
+    main()
