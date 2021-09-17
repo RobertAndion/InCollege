@@ -10,7 +10,7 @@ class TestIsPasswordSecure():
         assert is_password_secure("P2$sword") == True
         assert is_password_secure("P2$sword12") == True
 
-    def test_password_character_limit_lower(self):
+    def test_password_character_limit_upper(self):
         assert is_password_secure("P2$swordTooLong123") == False
         assert is_password_secure("Pa$sword12345") == False
         assert is_password_secure("Pa$sword1234") == True
