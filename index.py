@@ -63,7 +63,7 @@ def is_password_secure(pw):
     reg = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%^()*#?&])[A-Za-z\d@$!#%^()*?&]{8,12}$"
     pattern = re.compile(reg)
     res = re.match(pattern, pw)
-    return True if res else False
+    return res != None
 
 
 # executes when the user either successfully logged in or registered. Returns the next choice the user makes
