@@ -1,4 +1,5 @@
 from index import *
+import pytest
 
 
 class TestIsPasswordSecure():
@@ -36,3 +37,14 @@ class TestIsPasswordSecure():
     def test_password_contains_special(self):
         assert is_password_secure("Password12") == False
         assert is_password_secure("Password1#") == True
+
+
+@pytest.fixture(scope='module')
+def db():
+    # Setup
+    db = sqlite3.connect('testing.sqlite3')
+
+    yield db
+
+    # Teardown
+    db.close()
