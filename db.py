@@ -1,27 +1,43 @@
 import sqlite3
-db = sqlite3.connect('InCollege')
-
-# creates cursor instance. It'll be used to execute queries/commands in the database
-c = db.cursor()
-
-### if you want to create the user table
-## One time use only, unless you delete the database or the table
-c.execute(''' CREATE TABLE users (
-        username text PRIMARY KEY,
-        password text NOT NULL
-    )
-''')
 
 
-### To select and print all records
-## SHOULD REMOVE BEFORE SUBMITTING
-c.execute('SELECT * FROM users')
-# view all selected records
-data = c.fetchall()
-for row in data:
-    print(row)
+class db:
+    # constructor establsihes connection and creates tables
+    def __init__(self, db_name):
+        self.db = sqlite3.connect(db_name)
 
-### if you want to clear the table, for some reason
-# sql = 'DELETE FROM users'
-# c.execute(sql)
-db.commit()
+        sql_create_users_table = ''' CREATE TABLE IF NOT EXISTS users (
+            username text PRIMARY KEY,
+            password text NOT NULL
+        )
+    '''
+        c = self.db.cursor()
+        c.execute(sql_create_users_table)
+        self.db.commit()
+
+    # To select and print all records
+    def print_users(self):
+        c = self.db.cursor()
+        c.execute('SELECT * FROM users')
+        # view all selected records
+        data = c.fetchall()
+        for row in data:
+            print(row)
+
+    # if you want to clear the table, for some reason
+    def delete_users_table(self):
+        c = self.db.cursor()
+        sql = 'DELETE FROM users'
+        c.execute(sql)
+        self.db.commit()
+
+    def execute(self, sql, params=[]):
+        c = self.db.cursor()
+        c.execute(sql, params)
+        return c.fetchall()
+
+    def commit(self):
+        self.db.commit()
+
+    def close(self):
+        self.db.close()
