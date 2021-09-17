@@ -1,4 +1,4 @@
-from index import *
+from src.index import *
 import db as Database
 import pytest
 
