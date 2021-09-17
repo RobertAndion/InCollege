@@ -20,8 +20,15 @@ class TestIsPasswordSecure():
         assert is_password_secure("password1#") == False
         assert is_password_secure("Password1#") == True
 
-        assert is_password_secure("1$3456789") == False
-        assert is_password_secure("A$3456789") == True
+        assert is_password_secure("1$c456789") == False
+        assert is_password_secure("A$c456789") == True
+
+    def test_password_contains_lowercase(self):
+        assert is_password_secure("PASSWORD1#") == False
+        assert is_password_secure("PASSWORd1#") == True
+
+        assert is_password_secure("1$C456789") == False
+        assert is_password_secure("a$C456789") == True
 
     def test_password_contains_number(self):
         assert is_password_secure("Password$$") == False
