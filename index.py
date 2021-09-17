@@ -4,23 +4,11 @@ import re
 import db as Database
 
 # Making a connection to the database. If it doesn't already exist, it creates it
-db = Database.create_conenction("InCollege")
-
-# Create database if it does not exist.
-sql_create_users_table = ''' CREATE TABLE IF NOT EXISTS users (
-        username text PRIMARY KEY,
-        password text NOT NULL
-    )
-'''
-Database.create_table(db, sql_create_users_table)
-
-# creates cursor instance. It's be used to execute queries/commands in the database
-c = db.cursor()
-
-# returns the credentials. Called either in login() or register()
+db = Database.db("InCollege")
 
 
 def get_credentials():
+    # returns the credentials. Called either in login() or register()
     user = input('Enter username: ')
     password = input('Enter password: ')
     return (user, password)
@@ -33,8 +21,7 @@ def login():
         cred = get_credentials()
         # checks if the credentials exist in the users table
         find_user = ('SELECT * FROM users WHERE username = ? AND password = ?')
-        c.execute(find_user, cred)
-        res = c.fetchall()
+        res = db.execute(find_user, cred)
         if res:
             print('You have successfully logged in\n')
             return True
@@ -47,8 +34,7 @@ def login():
 
 def register():
     # checking the number of accounts already registered
-    c.execute('SELECT * FROM users')
-    num_accounts = len(c.fetchall())
+    num_accounts = len(db.execute('SELECT * FROM users'))
     if int(num_accounts) >= 5:
         print("All permitted accounts have been created, please come backlater\n")
     else:
@@ -58,7 +44,7 @@ def register():
         satisfies = is_password_secure(cred[1])
         if satisfies:
             # posting data to the database
-            c.execute("INSERT INTO users VALUES (?, ?)", cred)
+            db.execute("INSERT INTO users VALUES (?, ?)", cred)
             print("An account for " +
                   cred[0] + " was registered successfully... Redirecting\n")
             return True

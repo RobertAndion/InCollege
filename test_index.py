@@ -1,8 +1,9 @@
 from index import *
+import db as Database
 import pytest
 
 
-class TestIsPasswordSecure():
+class TestIsPasswordSecure:
     def test_password_character_limit_lower(self):
         assert is_password_secure("P2$s") == False
         assert is_password_secure("") == False
@@ -42,9 +43,15 @@ class TestIsPasswordSecure():
 @pytest.fixture(scope='module')
 def db():
     # Setup
-    db = sqlite3.connect('testing.sqlite3')
+    db_name = "testing.sqlite3"
+    db = Database.db(db_name)
 
     yield db
 
     # Teardown
+    db.delete_users_table()
     db.close()
+
+
+# class TestDB:
+#     def test_register_user(self):
