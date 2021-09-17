@@ -5,15 +5,14 @@ class TestIsPasswordSecure():
     def test_password_character_limit_lower(self):
         assert is_password_secure("P2$s") == False
         assert is_password_secure("") == False
-        assert is_password_secure("P2$swor") == False
-
-        assert is_password_secure("P2$sword") == True
+        assert is_password_secure("P2$swor") == False  # 7 chars
+        assert is_password_secure("P2$sword") == True  # 8 chars
         assert is_password_secure("P2$sword12") == True
 
     def test_password_character_limit_upper(self):
         assert is_password_secure("P2$swordTooLong123") == False
-        assert is_password_secure("Pa$sword12345") == False
-        assert is_password_secure("Pa$sword1234") == True
+        assert is_password_secure("Pa$sword12345") == False  # 13 chars
+        assert is_password_secure("Pa$sword1234") == True  # 12 chars
         assert is_password_secure("Pa$sword123") == True
 
     def test_password_contains_capital(self):
