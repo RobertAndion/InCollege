@@ -1,10 +1,10 @@
 import sqlite3
 import re
 
-import db as Database
+from src.database_access import database_access as Database
 
 # Making a connection to the database. If it doesn't already exist, it creates it
-db = Database.db("InCollege")
+db = Database("InCollege")
 
 
 def get_credentials():

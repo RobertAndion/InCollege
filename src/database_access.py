@@ -1,7 +1,6 @@
 import sqlite3
 
-
-class db:
+class database_access:
     # constructor establsihes connection and creates tables
     def __init__(self, db_name):
         self.db = sqlite3.connect(db_name)
