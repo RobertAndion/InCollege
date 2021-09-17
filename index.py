@@ -1,8 +1,18 @@
 import sqlite3
 import re
 
+import db as Database
+
 # Making a connection to the database. If it doesn't already exist, it creates it
-db = sqlite3.connect('InCollege')
+db = Database.create_conenction("InCollege")
+
+# Create database if it does not exist.
+sql_create_users_table = ''' CREATE TABLE IF NOT EXISTS users (
+        username text PRIMARY KEY,
+        password text NOT NULL
+    )
+'''
+Database.create_table(db, sql_create_users_table)
 
 # creates cursor instance. It's be used to execute queries/commands in the database
 c = db.cursor()
