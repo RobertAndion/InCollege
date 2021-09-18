@@ -3,6 +3,10 @@ import pytest
 import src.index
 from src.database_access import database_access as Database
 
+def resetFunctions():
+    src.index.input = input
+    src.index.print = print
+
 class TestIsPasswordSecure:
     def test_password_character_limit_lower(self):
         assert src.index.is_password_secure("P2$s") == False
@@ -87,13 +91,12 @@ class TestUserAccess:
         ]
         input_values = ['randion', 'Password1#']
         output = []
-
         src.index.input = input
         src.index.print = print
 
     def test_account_number_limit(self):
         # At this point we have 1 valid account, add 4 more then expect an error.
-        for i in range(0,3):
+        for i in range(0,3): #This being 3 should work and it used to but now it doesnt?
             input_values = ['randion' + str(i), 'Password1#' + str(i)]
             def mock_input(s):
                 return input_values.pop(0)
@@ -108,11 +111,57 @@ class TestUserAccess:
         src.index.input = mock_input
         src.index.print = lambda s: output.append(s)
         src.index.register()
+        print(output)
         assert output == [
         'All permitted accounts have been created, please come backlater\n'
         ]
         src.index.input = input
         src.index.print = print
+    # Functions below test the login workflow and each option.
+    def test_job_search(self):
+        input_values = ['1','randion', 'Password1#','1']
+        output = []
+
+        def mock_input(s):
+            output.append(s)
+            return input_values.pop(0)
+
+        src.index.input = mock_input
+        src.index.print = lambda s: output.append(s)
+        src.index.main()
+        assert output == [
+        'Welcome to InCollege:\n1- Login\n2- Register\nEnter a choice: ',
+        'Enter username: ',
+        'Enter password: ', 
+        'You have successfully logged in\n',
+        '1- Search for a job\n2- Find people you may know\n3- learn a new skill\nEnter a choice: ',
+        '\nunder construction\n'
+        ]
+        src.index.input = input
+        src.index.print = print
+    
+    def test_people_you_may_know(self): # This is breaking.
+        input_values = ['1','randion', 'Password1#','2']
+        output = []
+
+        def mock_input(s):
+            output.append(s)
+            return input_values.pop(0)
+
+        src.index.input = mock_input
+        src.index.print = lambda s: output.append(s)
+        src.index.main()
+        assert output == [
+        'Welcome to InCollege:\n1- Login\n2- Register\nEnter a choice: ',
+        'Enter username: ',
+        'Enter password: ', 
+        'You have successfully logged in\n',
+        '1- Search for a job\n2- Find people you may know\n3- learn a new skill\nEnter a choice: ',
+        '\nunder construction\n'
+        ]
+        src.index.input = input
+        src.index.print = print
+        
 
 @pytest.fixture(scope='module')
 def db():
