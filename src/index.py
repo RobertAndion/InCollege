@@ -3,9 +3,6 @@ import re
 
 from src.database_access import database_access as Database
 
-# Making a connection to the database. If it doesn't already exist, it creates it
-db = Database("InCollege")
-
 
 def get_credentials():
     # returns the credentials. Called either in login() or register()
@@ -16,7 +13,7 @@ def get_credentials():
 # gets called when the user chooses to login
 
 
-def login():
+def login(db):
     while True:
         cred = get_credentials()
         # checks if the credentials exist in the users table
@@ -32,7 +29,7 @@ def login():
 # gets called when the user chooses to register
 
 
-def register():
+def register(db):
     # checking the number of accounts already registered
     num_accounts = len(db.execute('SELECT * FROM users'))
     if int(num_accounts) >= 5:
@@ -95,7 +92,7 @@ def skills():
 
 # ================ MAIN ==================
 # you can think of it as the driver function. It's where everything starts
-def main():
+def main(db):
     # Stores possible functions (actions for the user) to call in the home page
     home_options = {
         1: login,
@@ -113,7 +110,7 @@ def main():
         input('Welcome to InCollege:\n1- Login\n2- Register\nEnter a choice: '))
     # calls the appropriate function based on the user choice
     if(first_action == 1 or first_action == 2):
-        res = home_options[first_action]()
+        res = home_options[first_action](db)
         # if the user logs in or registers successfully
         if res:
             # run logged_in() and store the returned value (which represent the next action to take)
@@ -125,9 +122,8 @@ def main():
 
     db.commit()
 
-    # closes the connection (optional)
-    db.close()
-
-
 if __name__ == "__main__":
-    main()
+    # Making a connection to the database. If it doesn't already exist, it creates it
+    db = Database("InCollege")
+    main(db)
+    db.close()
