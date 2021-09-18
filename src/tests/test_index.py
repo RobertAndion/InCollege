@@ -107,7 +107,7 @@ class TestUserAccess:
 
     def test_account_number_limit(self, db):
         # At this point we have 1 valid account, add 4 more then expect an error.
-        for i in range(0,4): #This being 3 should work and it used to but now it doesnt?
+        for i in range(0,4):
             input_values = ['randion' + str(i), 'Password1#' + str(i)]
             def mock_input(s):
                 return input_values.pop(0)
@@ -148,7 +148,7 @@ class TestUserAccess:
         "\nunder construction\n",
         'Return to main menu? y/n: ']
     
-    def test_job_search(self, db): # This will be test the options provided but will close the database connection, no further testing.
+    def test_job_search(self, db):
         input_values = ['1','randion', 'Password1#','1']
         output = []
 
@@ -169,8 +169,8 @@ class TestUserAccess:
         ]
         resetFunctions()
 
-'''
-    def test_people_you_may_know(self): # This is breaking.
+
+    def test_people_you_may_know(self, db):
         input_values = ['1','randion', 'Password1#','2']
         output = []
 
@@ -180,7 +180,7 @@ class TestUserAccess:
 
         src.index.input = mock_input
         src.index.print = lambda s: output.append(s)
-        src.index.main()
+        src.index.main(db)
         assert output == [
         'Welcome to InCollege:\n1- Login\n2- Register\nEnter a choice: ',
         'Enter username: ',
@@ -191,4 +191,4 @@ class TestUserAccess:
         ]
         src.index.input = input
         src.index.print = print
-        '''
+        
