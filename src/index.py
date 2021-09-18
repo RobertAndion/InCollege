@@ -119,7 +119,6 @@ def main():
             # run logged_in() and store the returned value (which represent the next action to take)
             option = logged_in()
             logged_in_options[option]()
-            logged_in() # I added this loop, we need db.commit() and db.close() in an exit option, after logged in.
 
     else:
         print("Invalid option")

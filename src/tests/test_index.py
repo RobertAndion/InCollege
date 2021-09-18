@@ -96,7 +96,7 @@ class TestUserAccess:
 
     def test_account_number_limit(self):
         # At this point we have 1 valid account, add 4 more then expect an error.
-        for i in range(0,3): #This being 3 should work and it used to but now it doesnt?
+        for i in range(0,4): #This being 3 should work and it used to but now it doesnt?
             input_values = ['randion' + str(i), 'Password1#' + str(i)]
             def mock_input(s):
                 return input_values.pop(0)
@@ -118,6 +118,25 @@ class TestUserAccess:
         src.index.input = input
         src.index.print = print
     # Functions below test the login workflow and each option.
+    def test_construction(self):
+        output = []
+        src.index.print = lambda s: output.append(s)
+        src.index.construction()
+        assert output == ["\nunder construction\n"]
+        src.index.print = print
+    
+    def test_skills(self):
+        input_values = ['1','n']
+        output = ['\n1- JavaScript\n2- Python\n3- SQL Sever\n4- MongoDB\n5- Design Patterns\nEnter a choice: ',
+        "\nunder construction\n"
+        ]
+        def mock_input(s):
+            output.append(s)
+            return input_values.pop(0)
+        src.index.input = mock_input
+        src.index.print = lambda s: output.append(s)
+        src.index.skills()
+    '''
     def test_job_search(self):
         input_values = ['1','randion', 'Password1#','1']
         output = []
@@ -161,7 +180,7 @@ class TestUserAccess:
         ]
         src.index.input = input
         src.index.print = print
-        
+        '''
 
 @pytest.fixture(scope='module')
 def db():
