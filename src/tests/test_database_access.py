@@ -1,0 +1,41 @@
+import pytest
+import src.index
+from src.database_access import database_access as Database
+
+def resetFunctions():
+    src.index.input = input
+    src.index.print = print
+
+@pytest.fixture(scope='module')
+def db():
+    # Setup
+    db_name = "testing.sqlite3"
+    db = Database(db_name)
+    db.delete_users_table() # in case an error breaks the code before the Teardown is reached.
+
+    yield db
+
+    # Teardown
+    db.delete_users_table()
+    resetFunctions()
+    db.close()
+
+class TestUserInformation:
+    def test_print_users(self, db):
+        for i in range(0,5):
+            input_values = ['randion' + str(i), 'Password1#' + str(i)]
+            def mock_input(s):
+                return input_values.pop(0)
+            src.index.input = mock_input
+            src.index.register(db)
+        src.index.input = input
+        output = []
+        src.database_access.print = lambda s: output.append(s)
+        db.print_users()
+        assert output == [
+            ('randion0', 'Password1#0'),
+            ('randion1', 'Password1#1'),
+            ('randion2', 'Password1#2'),
+            ('randion3', 'Password1#3'),
+            ('randion4', 'Password1#4'),
+        ]
