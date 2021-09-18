@@ -91,6 +91,28 @@ class TestUserAccess:
         src.index.input = input
         src.index.print = print
 
+    def test_account_number_limit(self):
+        # At this point we have 1 valid account, add 4 more then expect an error.
+        for i in range(0,3):
+            input_values = ['randion' + str(i), 'Password1#' + str(i)]
+            def mock_input(s):
+                return input_values.pop(0)
+            src.index.input = mock_input
+            src.index.register()
+        # Create one more than the maximum
+        input_values = ['randion43D', 'Password1#$@']
+        output = []
+        def mock_input(s):
+            output.append(s)
+            return input_values.pop(0)
+        src.index.input = mock_input
+        src.index.print = lambda s: output.append(s)
+        src.index.register()
+        assert output == [
+        'All permitted accounts have been created, please come backlater\n'
+        ]
+        src.index.input = input
+        src.index.print = print
 
 @pytest.fixture(scope='module')
 def db():
