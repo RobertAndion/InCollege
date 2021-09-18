@@ -58,6 +58,35 @@ class TestUserAccess:
         'Enter password: ', 
         'An account for randion was registered successfully... Redirecting\n'
         ]
+        src.index.input = input
+        src.index.print = print
+
+    def test_user_login(self):
+        #invalid login
+        input_values = ['randion', 'Passwor']
+        output = []
+        def mock_input(s):
+            output.append(s)
+            return input_values.pop(0)
+        src.index.input = mock_input
+        src.index.print = lambda s: output.append(s)
+        src.index.login()
+        assert output == [
+        'Enter username: ',
+        'Enter password: ', 
+        'Incorrect username / password, please try again\n'
+        ]
+        #valid login
+        input_values = ['randion', 'Password1#']
+        output = []
+        src.index.login()
+        assert output == [
+        'Enter username: ',
+        'Enter password: ', 
+        'You have successfully logged in\n'
+        ]
+        input_values = ['randion', 'Password1#']
+        output = []
 
         src.index.input = input
         src.index.print = print
