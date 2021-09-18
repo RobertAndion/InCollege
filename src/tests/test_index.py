@@ -168,6 +168,7 @@ def db():
     # Setup
     db_name = "testing.sqlite3"
     db = Database.db(db_name)
+    src.index.db = db
 
     yield db
 
