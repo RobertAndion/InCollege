@@ -92,7 +92,7 @@ def skills():
 
 # ================ MAIN ==================
 # you can think of it as the driver function. It's where everything starts
-def main(db):
+def main(db: Database):
     # Stores possible functions (actions for the user) to call in the home page
     home_options = {
         1: login,
@@ -120,10 +120,8 @@ def main(db):
     else:
         print("Invalid option")
 
-    db.commit()
-
 if __name__ == "__main__":
     # Making a connection to the database. If it doesn't already exist, it creates it
-    db = Database("InCollege")
+    db = Database("InCollege.sqlite3")
     main(db)
     db.close()

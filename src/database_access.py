@@ -33,6 +33,8 @@ class database_access:
     def execute(self, sql, params=[]):
         c = self.db.cursor()
         c.execute(sql, params)
+        self.db.commit()
+        
         return c.fetchall()
 
     def commit(self):
