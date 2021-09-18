@@ -62,8 +62,7 @@ class TestUserAccess:
         'Enter password: ', 
         'An account for randion was registered successfully... Redirecting\n'
         ]
-        src.index.input = input
-        src.index.print = print
+        resetFunctions()
 
     def test_user_login(self):
         #invalid login
@@ -91,8 +90,7 @@ class TestUserAccess:
         ]
         input_values = ['randion', 'Password1#']
         output = []
-        src.index.input = input
-        src.index.print = print
+        resetFunctions()
 
     def test_account_number_limit(self):
         # At this point we have 1 valid account, add 4 more then expect an error.
@@ -115,8 +113,7 @@ class TestUserAccess:
         assert output == [
         'All permitted accounts have been created, please come backlater\n'
         ]
-        src.index.input = input
-        src.index.print = print
+        resetFunctions()
     # Functions below test the login workflow and each option.
     def test_construction(self):
         output = []
@@ -127,17 +124,18 @@ class TestUserAccess:
     
     def test_skills(self):
         input_values = ['1','n']
-        output = ['\n1- JavaScript\n2- Python\n3- SQL Sever\n4- MongoDB\n5- Design Patterns\nEnter a choice: ',
-        "\nunder construction\n"
-        ]
+        output = []
         def mock_input(s):
             output.append(s)
             return input_values.pop(0)
         src.index.input = mock_input
         src.index.print = lambda s: output.append(s)
         src.index.skills()
-    '''
-    def test_job_search(self):
+        assert output == ['\n1- JavaScript\n2- Python\n3- SQL Sever\n4- MongoDB\n5- Design Patterns\nEnter a choice: ',
+        "\nunder construction\n",
+        'Return to main menu? y/n: ']
+    
+    def test_job_search(self): # This will be test the options provided but will close the database connection, no further testing.
         input_values = ['1','randion', 'Password1#','1']
         output = []
 
@@ -156,9 +154,9 @@ class TestUserAccess:
         '1- Search for a job\n2- Find people you may know\n3- learn a new skill\nEnter a choice: ',
         '\nunder construction\n'
         ]
-        src.index.input = input
-        src.index.print = print
-    
+        resetFunctions()
+
+'''
     def test_people_you_may_know(self): # This is breaking.
         input_values = ['1','randion', 'Password1#','2']
         output = []
@@ -186,12 +184,13 @@ class TestUserAccess:
 def db():
     # Setup
     db_name = "testing.sqlite3"
-    db = Database.db(db_name)
+    db = Database(db_name)
     src.index.db = db
 
     yield db
 
     # Teardown
+    resetFunctions()
     db.delete_users_table()
     db.close()
 
