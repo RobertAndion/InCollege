@@ -1,7 +1,6 @@
 import sqlite3
 
-
-class db:
+class database_access:
     # constructor establsihes connection and creates tables
     def __init__(self, db_name):
         self.db = sqlite3.connect(db_name)
@@ -34,6 +33,8 @@ class db:
     def execute(self, sql, params=[]):
         c = self.db.cursor()
         c.execute(sql, params)
+        self.db.commit()
+        
         return c.fetchall()
 
     def commit(self):
