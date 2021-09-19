@@ -1,4 +1,3 @@
-import sqlite3
 import re
 
 from src.database_access import database_access as Database
