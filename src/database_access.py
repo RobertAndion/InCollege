@@ -1,5 +1,6 @@
 import sqlite3
 
+
 class database_access:
     # constructor establsihes connection and creates tables
     def __init__(self, db_name):
@@ -15,6 +16,7 @@ class database_access:
         self.db.commit()
 
     # To select and print all records
+
     def print_users(self):
         c = self.db.cursor()
         c.execute('SELECT * FROM users')
@@ -34,7 +36,7 @@ class database_access:
         c = self.db.cursor()
         c.execute(sql, params)
         self.db.commit()
-        
+
         return c.fetchall()
 
     def commit(self):
