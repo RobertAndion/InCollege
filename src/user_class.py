@@ -4,9 +4,23 @@ import re
 from database_access import database_access as Database
 db = Database("InCollege.sqlite3")
 
+
+# class to store a job
+class PostedJob():
+    def __init__(name, title, description, employer, location, salary):
+        name = name
+        title = title
+        description = description
+        employer = employer
+        location = location
+        salary = salary
+
 # each page will "render" the appropriate "form" or prompt
 class Page:
     def __init__(self):
+        #current login info
+        self.username = ""
+        self.password = ""
         # stack is to implement the navigation functionality
         self.page_stack = []
         # To control the view
@@ -110,15 +124,35 @@ class Page:
             print("They are not yet a part of the InCollege system yet")
             self.back_option()
 
-    ################# NATHAN ################
+    # function to post a job to the database, returns true if successful, false otherwise
+    def postjob(self):
+        #check if there are more than 5 jobs
+        numjobs = len(db.execute('SELECT * FROM jobs'))
+        if(numjobs >= 5):
+            print("There are already 5 jobs. Please try again later\n")
+            return False
+        
+        else:
+            temp = PostedJob
+            temp.name = self.username
+            temp.title = input("Please enter the job's title: ")
+            temp.description = input("Please enter a description of the job: ")
+            temp.employer = input("Who is the employer of the job? ")
+            temp.location = input("Where is this job located? ")
+            temp.salary = float(input("Please estimate the salary of the job (only numbers): "))
+            
+            #insert object member values into database
+            db.execute('INSERT INTO jobs VALUES (?, ?, ?, ?, ?, ?)', temp.name, temp.title, temp.description, temp.employer, temp.location, temp.salary)
+            
+            print("Thanks your job was posted! Returning to the previous menu...")
+            return True
+
     def post_job_page(self):
         self.page_stack.append(5)
         if self.authorized:
-            print('Enter your code here Nathan!')
-
+            self.postjob()
             # this is to go back a level
             self.back_option()
-    ################# NATHAN ################
 
     def skills_page(self):
         self.page_stack.append(6)

@@ -12,6 +12,16 @@ class database_access:
             lastname TEXT NOT NULL
         )
     '''
+        sql_create_jobs_table = ''' CREATE TABLE IF NOT EXISTS jobs (
+            username text
+            title text
+            description text
+            employer text
+            location text
+            salary real
+        )
+    '''
+
         c = self.db.cursor()
         c.execute(sql_create_users_table)
         self.db.commit()

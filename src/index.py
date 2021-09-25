@@ -1,4 +1,5 @@
 from user_class import Page
+from user_class import PostedJob
 from database_access import database_access as Database
 
 
