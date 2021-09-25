@@ -7,7 +7,9 @@ class database_access:
 
         sql_create_users_table = ''' CREATE TABLE IF NOT EXISTS users (
             username text PRIMARY KEY,
-            password text NOT NULL
+            password text NOT NULL,
+            firstname TEXT NOT NULL,
+            lastname TEXT NOT NULL
         )
     '''
         c = self.db.cursor()
