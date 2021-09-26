@@ -142,7 +142,7 @@ class Page:
             temp.salary = float(input("Please estimate the salary of the job (only numbers): "))
             
             #insert object member values into database
-            db.execute('INSERT INTO jobs VALUES (?, ?, ?, ?, ?, ?)', temp.name, temp.title, temp.description, temp.employer, temp.location, temp.salary)
+            db.execute('INSERT INTO jobs VALUES (?, ?, ?, ?, ?, ?)', [temp.name, temp.title, temp.description, temp.employer, temp.location, temp.salary])
             
             print("Thanks your job was posted! Returning to the previous menu...")
             return True

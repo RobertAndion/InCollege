@@ -179,7 +179,7 @@ class TestJobPosting():
     src.user_class.db = db
 
     def testPostValidJob(self):
-        input_values = ['Worm Farmer', 'Farming worms', 'WormsRUs','Bikini Bottom','Eight Schmekels']
+        input_values = ['Worm Farmer', 'Farming worms', 'WormsRUs','Bikini Bottom','20000']
         output = []
         def mock_input(s):
             return input_values.pop(0)
@@ -193,6 +193,6 @@ class TestJobPosting():
         assert True == True
 
     def testCleanUp(self): # Teardown
-        self.db.delete_users_table()
+        self.db.delete_jobs_table()
         self.db.close()
         assert True == True

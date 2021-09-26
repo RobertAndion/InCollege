@@ -13,17 +13,19 @@ class database_access:
         )
     '''
         sql_create_jobs_table = ''' CREATE TABLE IF NOT EXISTS jobs (
-            username text
-            title text
-            description text
-            employer text
-            location text
-            salary real
+            username text NOT NULL,
+            title text NOT NULL,
+            description text NOT NULL,
+            employer text NOT NULL,
+            location text NOT NULL,
+            salary real NOT NULL,
+            PRIMARY KEY(username,title)
         )
     '''
 
         c = self.db.cursor()
         c.execute(sql_create_users_table)
+        c.execute(sql_create_jobs_table)
         self.db.commit()
 
     # To select and print all tables
