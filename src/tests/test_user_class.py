@@ -46,7 +46,7 @@ class TestIsPasswordSecure:
         assert self.page.is_password_secure("Password1#") == True
 
 
-class TestGetCredentials():
+class TestGetCredentials:
     page = src.user_class.Page()
 
     def testLoginIO(self):
@@ -83,13 +83,13 @@ class TestGetCredentials():
             'Enter last name: ',
         ]
 
-class TestRegisterLogin():
+class TestRegisterLogin:
     page = src.user_class.Page()
     db_name = "testing.sqlite3"
     db = src.database_access.database_access(db_name)
     src.user_class.db = db
     def testUserRegistration(self):
-        input_values = ['randion', 'Password#1', 'Robby', 'YbboR']
+        input_values = ['randion', 'Password#1', 'Robby', 'Ybbor']
         output = []
 
         def mock_input(s):
@@ -153,6 +153,44 @@ class TestRegisterLogin():
         assert output == [
             "All permitted accounts have been created, please come backlater\n"
         ]
+    
+    def testDatabasePrint(self):
+        output=[]
+        src.database_access.print = lambda s: output.append(s)
+        self.db.print_users()
+        assert output == [
+            ('randion', 'Password#1', 'Robby', 'Ybbor'),
+            ('randion0', 'Password#10', 'Robby0', 'Ybbor0'),
+            ('randion1', 'Password#11', 'Robby1', 'Ybbor1'),
+            ('randion2', 'Password#12', 'Robby2', 'Ybbor2'),
+            ('randion3', 'Password#13', 'Robby3', 'Ybbor3')
+        ]
+
+    def testCleanUp(self): # Teardown
+        self.db.delete_users_table()
+        self.db.close()
+        assert True == True
+
+class TestJobPosting():
+    page = src.user_class.Page()
+    page.name = "General Kenobi The Negotiator"
+    db_name = "testing.sqlite3"
+    db = src.database_access.database_access(db_name)
+    src.user_class.db = db
+
+    def testPostValidJob(self):
+        input_values = ['Worm Farmer', 'Farming worms', 'WormsRUs','Bikini Bottom','Eight Schmekels']
+        output = []
+        def mock_input(s):
+            return input_values.pop(0)
+        src.user_class.input = mock_input
+        src.user_class.print = lambda s: output.append(s)
+        self.page.postjob()
+        assert output == [
+        "Thanks your job was posted! Returning to the previous menu..."
+        ]
+    def testPostInvalidJob(self):
+        assert True == True
 
     def testCleanUp(self): # Teardown
         self.db.delete_users_table()
