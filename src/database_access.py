@@ -24,6 +24,7 @@ class database_access:
 
         c = self.db.cursor()
         c.execute(sql_create_users_table)
+        c.execute(sql_create_jobs_table)
         self.db.commit()
 
     # To select and print all tables
