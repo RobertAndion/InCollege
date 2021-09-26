@@ -1,6 +1,6 @@
-from user_class import Page
-from user_class import PostedJob
-from database_access import database_access as Database
+from src.user_class import Page
+from src.user_class import PostedJob
+from src.database_access import database_access as Database
 
 
 # ================ MAIN ==================

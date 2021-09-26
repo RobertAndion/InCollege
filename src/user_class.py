@@ -1,7 +1,7 @@
 from enum import Enum
 import enum
 import re
-from database_access import database_access as Database
+from src.database_access import database_access as Database
 db = Database("InCollege.sqlite3")
 
 
