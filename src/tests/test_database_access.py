@@ -1,10 +1,10 @@
 import pytest
-import src.index
+import src.user_class
 from src.database_access import database_access as Database
 
 def resetFunctions():
-    src.index.input = input
-    src.index.print = print
+    src.user_class.input = input
+    src.user_class.print = print
 
 @pytest.fixture(scope='module')
 def db():
@@ -12,8 +12,8 @@ def db():
     db_name = "testing.sqlite3"
     db = Database(db_name)
     db.delete_users_table() # in case an error breaks the code before the Teardown is reached.
-
-    yield db
+    page = src.user_class.Page()
+    yield db, page
 
     # Teardown
     db.delete_users_table()
@@ -21,13 +21,13 @@ def db():
     db.close()
 
 class TestUserInformation:
-    def test_print_users(self, db):
+    def test_print_users(self, db, page):
         for i in range(0,5):
             input_values = ['randion' + str(i), 'Password1#' + str(i)]
             def mock_input(s):
                 return input_values.pop(0)
             src.index.input = mock_input
-            src.index.register(db)
+            page.register(db)
         src.index.input = input
         output = []
         src.database_access.print = lambda s: output.append(s)
