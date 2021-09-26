@@ -202,10 +202,30 @@ class TestJobPosting():
         ]
 
     def testPostInvalidJob(self):
-        assert True == True
+        input_values = ['Worm Farmer0', 'Farming worms',
+                        'WormsRUs', 'Bikini Bottom', 'Shmeckle', '20000']
+        output = []
+
+        def mock_input(s):
+            output.append(s)
+            return input_values.pop(0)
+        src.user_class.input = mock_input
+        src.user_class.print = lambda s: output.append(s)
+        self.page.postjob()
+        resetFunctions()
+        assert output == [
+            "Please enter the job's title: ",
+            "Please enter a description of the job: ",
+            "Who is the employer of the job? ",
+            "Where is this job located? ",
+            "Please estimate the salary of the job (only numbers): ",
+            "Not a valid number. Try again.",
+            "Please estimate the salary of the job (only numbers): ",
+            "Thanks your job was posted! Returning to the previous menu..."
+        ]
 
     def testJobPostLimit(self):
-        for i in range(0, 4):
+        for i in range(1, 4):
             input_values = [
                 'Worm Farmer' + str(i), 'Farming worms', 'WormsRUs', 'Bikini Bottom', '20000']
 
