@@ -2,9 +2,11 @@ import pytest
 import src.user_class
 import src.database_access
 
+
 def resetFunctions():
     src.user_class.input = input
     src.user_class.print = print
+
 
 class TestIsPasswordSecure:
     page = src.user_class.Page()
@@ -83,11 +85,13 @@ class TestGetCredentials:
             'Enter last name: ',
         ]
 
+
 class TestRegisterLogin:
     page = src.user_class.Page()
     db_name = "testing.sqlite3"
     db = src.database_access.database_access(db_name)
     src.user_class.db = db
+
     def testUserRegistration(self):
         input_values = ['randion', 'Password#1', 'Robby', 'Ybbor']
         output = []
@@ -138,12 +142,14 @@ class TestRegisterLogin:
         def mock_input(s):
             return input_values.pop(0)
         src.user_class.input = mock_input
-        for i in range(0,4):
-            input_values = ['randion' + str(i), 'Password#1' + str(i), 'Robby' + str(i), 'Ybbor' + str(i)]
+        for i in range(0, 4):
+            input_values = [
+                'randion' + str(i), 'Password#1' + str(i), 'Robby' + str(i), 'Ybbor' + str(i)]
             self.page.register()
         resetFunctions()
         output = []
         input = ['TomSawyer', 'Passworrd#234', 'Tommy', "Sawyer"]
+
         def mock_input(s):
             output.append(s)
         src.user_class.input = mock_input
@@ -153,11 +159,12 @@ class TestRegisterLogin:
         assert output == [
             "All permitted accounts have been created, please come backlater\n"
         ]
-    
-    def testDatabasePrint(self):
-        output=[]
+
+    def testDatabaseUserPrint(self):
+        output = []
         src.database_access.print = lambda s: output.append(s)
         self.db.print_users()
+        src.database_access.print = print
         assert output == [
             ('randion', 'Password#1', 'Robby', 'Ybbor'),
             ('randion0', 'Password#10', 'Robby0', 'Ybbor0'),
@@ -166,33 +173,69 @@ class TestRegisterLogin:
             ('randion3', 'Password#13', 'Robby3', 'Ybbor3')
         ]
 
-    def testCleanUp(self): # Teardown
+    def testCleanUp(self):  # Teardown
         self.db.delete_users_table()
         self.db.close()
         assert True == True
 
+
 class TestJobPosting():
     page = src.user_class.Page()
-    page.name = "General Kenobi The Negotiator"
+    page.username = "General Kenobi The Negotiator"
     db_name = "testing.sqlite3"
     db = src.database_access.database_access(db_name)
     src.user_class.db = db
 
     def testPostValidJob(self):
-        input_values = ['Worm Farmer', 'Farming worms', 'WormsRUs','Bikini Bottom','Eight Schmekels']
+        input_values = ['Worm Farmer', 'Farming worms',
+                        'WormsRUs', 'Bikini Bottom', '20000']
         output = []
+
         def mock_input(s):
             return input_values.pop(0)
         src.user_class.input = mock_input
         src.user_class.print = lambda s: output.append(s)
         self.page.postjob()
+        resetFunctions()
         assert output == [
-        "Thanks your job was posted! Returning to the previous menu..."
+            "Thanks your job was posted! Returning to the previous menu..."
         ]
+
     def testPostInvalidJob(self):
         assert True == True
 
-    def testCleanUp(self): # Teardown
-        self.db.delete_users_table()
+    def testJobPostLimit(self):
+        for i in range(0, 4):
+            input_values = [
+                'Worm Farmer' + str(i), 'Farming worms', 'WormsRUs', 'Bikini Bottom', '20000']
+
+            def mock_input(s):
+                return input_values.pop(0)
+            src.user_class.input = mock_input
+            self.page.postjob()
+        output = []
+        input_values = ['Not going to post', 'Farming worms',
+                        'WormsRUs', 'Bikini Bottom', '20000']
+
+        def mock_input(s):
+            return input_values.pop(0)
+        src.user_class.input = mock_input
+        src.user_class.print = lambda s: output.append(s)
+        self.page.postjob()
+        resetFunctions()
+        assert output == [
+            'There are already 5 jobs. Please try again later\n'
+        ]
+
+    def testDatabaseJobPrint(self):
+        output = []
+        src.database_access.print = lambda s: output.append(s)
+        self.db.print_jobs()
+        assert output == [('General Kenobi The Negotiator', 'Worm Farmer', 'Farming worms', 'WormsRUs', 'Bikini Bottom', 20000.0), ('General Kenobi The Negotiator', 'Worm Farmer0', 'Farming worms', 'WormsRUs', 'Bikini Bottom', 20000.0), ('General Kenobi The Negotiator', 'Worm Farmer1',
+                                                                                                                                                                                                                                              'Farming worms', 'WormsRUs', 'Bikini Bottom', 20000.0), ('General Kenobi The Negotiator', 'Worm Farmer2', 'Farming worms', 'WormsRUs', 'Bikini Bottom', 20000.0), ('General Kenobi The Negotiator', 'Worm Farmer3', 'Farming worms', 'WormsRUs', 'Bikini Bottom', 20000.0)]
+        src.database_access.print
+
+    def testCleanUp(self):  # Teardown
+        self.db.delete_jobs_table()
         self.db.close()
         assert True == True
