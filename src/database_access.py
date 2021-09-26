@@ -26,7 +26,7 @@ class database_access:
         c.execute(sql_create_users_table)
         self.db.commit()
 
-    # To select and print all records
+    # To select and print all tables
     def print_users(self):
         c = self.db.cursor()
         c.execute('SELECT * FROM users')
@@ -35,10 +35,24 @@ class database_access:
         for row in data:
             print(row)
 
-    # if you want to clear the table, for some reason
+    def print_jobs(self):
+        c = self.db.cursor()
+        c.execute('SELECT * FROM jobs')
+        # view all selected jobs
+        data = c.fetchall()
+        for row in data:
+            print(row)
+
+    # if you want to clear the table(s)
     def delete_users_table(self):
         c = self.db.cursor()
         sql = 'DELETE FROM users'
+        c.execute(sql)
+        self.db.commit()
+
+    def delete_jobs_table(self):
+        c = self.db.cursor()
+        sql = 'DELETE FROM jobs'
         c.execute(sql)
         self.db.commit()
 
