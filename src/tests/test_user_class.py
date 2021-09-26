@@ -1,0 +1,160 @@
+import pytest
+import src.user_class
+import src.database_access
+
+def resetFunctions():
+    src.user_class.input = input
+    src.user_class.print = print
+
+class TestIsPasswordSecure:
+    page = src.user_class.Page()
+
+    def test_password_character_limit_lower(self):
+        assert self.page.is_password_secure("P2$s") == False
+        assert self.page.is_password_secure("") == False
+        assert self.page.is_password_secure("P2$swor") == False  # 7 chars
+        assert self.page.is_password_secure("P2$sword") == True  # 8 chars
+        assert self.page.is_password_secure("P2$sword12") == True
+
+    def test_password_character_limit_upper(self):
+        assert self.page.is_password_secure("P2$swordTooLong123") == False
+        assert self.page.is_password_secure(
+            "Pa$sword12345") == False  # 13 chars
+        assert self.page.is_password_secure("Pa$sword1234") == True  # 12 chars
+        assert self.page.is_password_secure("Pa$sword123") == True
+
+    def test_password_contains_capital(self):
+        assert self.page.is_password_secure("password1#") == False
+        assert self.page.is_password_secure("Password1#") == True
+
+        assert self.page.is_password_secure("1$c456789") == False
+        assert self.page.is_password_secure("A$c456789") == True
+
+    def test_password_contains_lowercase(self):
+        assert self.page.is_password_secure("PASSWORD1#") == False
+        assert self.page.is_password_secure("PASSWORd1#") == True
+
+        assert self.page.is_password_secure("1$C456789") == False
+        assert self.page.is_password_secure("a$C456789") == True
+
+    def test_password_contains_number(self):
+        assert self.page.is_password_secure("Password$$") == False
+        assert self.page.is_password_secure("Password1$") == True
+
+    def test_password_contains_special(self):
+        assert self.page.is_password_secure("Password12") == False
+        assert self.page.is_password_secure("Password1#") == True
+
+
+class TestGetCredentials():
+    page = src.user_class.Page()
+
+    def testLoginIO(self):
+        input_values = ['randion', 'Password#1']
+        output = []
+
+        def mock_input(s):
+            output.append(s)
+            return input_values.pop(0)
+        src.user_class.input = mock_input
+        src.user_class.print = lambda s: output.append(s)
+        self.page.get_credentials(False)
+        resetFunctions()
+        assert output == [
+            'Enter username: ',
+            'Enter password: ',
+        ]
+
+    def testRegisterIO(self):
+        input_values = ['randion', 'Password#1', 'Robby', 'YbboR']
+        output = []
+
+        def mock_input(s):
+            output.append(s)
+            return input_values.pop(0)
+        src.user_class.input = mock_input
+        src.user_class.print = lambda s: output.append(s)
+        self.page.get_credentials(True)
+        resetFunctions()
+        assert output == [
+            'Enter username: ',
+            'Enter password: ',
+            'Enter first name: ',
+            'Enter last name: ',
+        ]
+
+class TestRegisterLogin():
+    page = src.user_class.Page()
+    db_name = "testing.sqlite3"
+    db = src.database_access.database_access(db_name)
+    src.user_class.db = db
+    def testUserRegistration(self):
+        input_values = ['randion', 'Password#1', 'Robby', 'YbboR']
+        output = []
+
+        def mock_input(s):
+            return input_values.pop(0)
+        src.user_class.input = mock_input
+        src.user_class.print = lambda s: output.append(s)
+        self.page.register()
+        resetFunctions()
+        assert output == ["An account for randion was registered successfully"]
+
+    def testUserLoginCorrect(self):
+        input_values = ['randion', 'Password#1']
+        output = []
+
+        def mock_input(s):
+            output.append(s)
+            return input_values.pop(0)
+        src.user_class.input = mock_input
+        src.user_class.print = lambda s: output.append(s)
+        self.page.login()
+        resetFunctions()
+        assert output == [
+            'Enter username: ',
+            'Enter password: ',
+            "You have successfully logged in\n"
+        ]
+
+    def testUserLoginIncorrect(self):
+        input_values = ['randion', 'Password#']
+        output = []
+
+        def mock_input(s):
+            output.append(s)
+            return input_values.pop(0)
+        src.user_class.input = mock_input
+        src.user_class.print = lambda s: output.append(s)
+        self.page.login()
+        resetFunctions()
+        assert output == [
+            'Enter username: ',
+            'Enter password: ',
+            "Incorrect username / password, please try again\n"
+        ]
+
+    def testUserRegistrationLimit(self):
+        def mock_input(s):
+            return input_values.pop(0)
+        src.user_class.input = mock_input
+        for i in range(0,4):
+            input_values = ['randion' + str(i), 'Password#1' + str(i), 'Robby' + str(i), 'Ybbor' + str(i)]
+            self.page.register()
+        resetFunctions()
+        output = []
+        input = ['TomSawyer', 'Passworrd#234', 'Tommy', "Sawyer"]
+        def mock_input(s):
+            output.append(s)
+        src.user_class.input = mock_input
+        src.user_class.print = lambda s: output.append(s)
+        self.page.register()
+        resetFunctions()
+        assert output == [
+            "All permitted accounts have been created, please come backlater\n"
+        ]
+
+    def testCleanUp(self): # Teardown
+        self.db.delete_users_table()
+        self.db.close()
+        assert True == True
